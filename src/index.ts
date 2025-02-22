@@ -1,18 +1,15 @@
-import { Client } from "@notionhq/client";
+import { CATEGORIES, loadEnvVariables } from "./notion/notionKeys";
+import { getTranstactions } from "./bank_statement_reader";
+import sendTransactions from "./notion/sendTransactions";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 async function main() {
-  const notion = new Client({
-    auth: process.env.NOTION_TOKEN,
-  });
+  await loadEnvVariables();
 
-  const response = await notion.databases.query({
-    database_id: "FIXME",
-  });
-
-  console.log("Got response:", response);
+  const transactions = getTranstactions();
+  await sendTransactions(transactions);
 }
 
 main()
