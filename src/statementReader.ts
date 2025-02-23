@@ -12,19 +12,16 @@ interface CSVTransaction {
   State: string;
 }
 
-export async function getTranstactions() {
-  const csvTxs = readBankStatement();
+export async function getTranstactions(csvPath: string) {
+  const csvTxs = readBankStatement(csvPath);
   const txs = parseTransactions(csvTxs);
-  await setCategories(txs.expenses);
+  // await setCategories(txs.expenses);
 
   return txs;
 }
 
-function readBankStatement() {
-  const csvFilePath =
-    "bank_statements/account-statement_2025-02-01_2025-02-22_es_23180b.csv"; // TODO Read the whole folder
-
-  const csvFile = fs.readFileSync(csvFilePath, { encoding: "utf-8" });
+function readBankStatement(csvPath: string) {
+  const csvFile = fs.readFileSync(csvPath, { encoding: "utf-8" });
 
   const transactions = parse(csvFile, {
     bom: true,
@@ -71,7 +68,6 @@ function parseTransactions(transactions: CSVTransaction[]): ParsedTransactions {
 async function setCategories(expenses: Expense[]) {
   console.clear();
 
-  // TODO Print all categories
   const { stringMenu, menuMap } = categoriesMenu(CATEGORIES);
 
   const rl = readline.createInterface({

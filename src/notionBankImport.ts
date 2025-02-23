@@ -2,13 +2,22 @@ import { loadEnvVariables } from "./notion/notionKeys";
 import { getTranstactions } from "./statementReader";
 import sendTransactions from "./notion/sendTransactions";
 import dotenv from "dotenv";
+import errorColor from "./util/errorColor";
 
 dotenv.config();
 
 async function main() {
+  if (process.argv.length === 2) {
+    console.error(errorColor("Expected csv path!"));
+    process.exit(1);
+  }
+
   await loadEnvVariables();
 
-  const transactions = await getTranstactions();
+  // Read csv
+  const transactions = await getTranstactions(process.argv[2]);
+
+  // Send to notion
   await sendTransactions(transactions);
 }
 

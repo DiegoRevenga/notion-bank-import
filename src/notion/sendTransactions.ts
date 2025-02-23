@@ -18,8 +18,8 @@ export default async function sendTransactions(txs: ParsedTransactions) {
 }
 
 function sendExpenses(notion: Client, expenses: Expense[]) {
-  return expenses.map((ex) =>
-    notion.pages.create({
+  return expenses.map((ex) => {
+    let args: any = {
       parent: { database_id: EXPENSE_DB },
       properties: {
         Date: {
@@ -33,7 +33,6 @@ function sendExpenses(notion: Client, expenses: Expense[]) {
           ],
         },
         "Total Amount": { number: ex.Amount },
-        Categories: { relation: [{ id: ex.CategoryId }] },
         Accounts: { relation: [{ id: ex.AccountId }] },
       },
       icon: {
@@ -42,8 +41,15 @@ function sendExpenses(notion: Client, expenses: Expense[]) {
           url: "https://www.notion.so/icons/upward_gray.svg",
         },
       },
-    })
-  );
+    };
+
+    // Add category only if exists
+    if (ex.CategoryId) {
+      args.Categories = { relation: [{ id: ex.CategoryId }] };
+    }
+
+    return notion.pages.create(args);
+  });
 }
 
 function sendIncomes(notion: Client, incomes: Income[]) {

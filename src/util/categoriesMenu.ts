@@ -1,4 +1,5 @@
 import { CategoryInfo } from "../notion/notionKeys";
+import errorColor from "./errorColor";
 
 const MAX_CATEGORIES = 12;
 
@@ -11,9 +12,7 @@ const KEYS = [
 
 export default function categoriesMenu(categories: CategoryInfo[]) {
   if (categories.length > MAX_CATEGORIES) {
-    throw new Error(
-      `\u001b[0;31mMax categories allowed is ${MAX_CATEGORIES}\u001b[0m`
-    );
+    throw new Error(errorColor(`Max categories allowed is ${MAX_CATEGORIES}`));
   }
 
   const menuDisplay = KEYS.map((row) => row);
