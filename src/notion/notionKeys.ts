@@ -4,7 +4,7 @@ import assertDefined from "../util/assertDefined";
 export let NOTION_TOKEN: string;
 export let EXPENSE_DB: string;
 export let INCOME_DB: string;
-export let REVOLUT_ACC: string;
+export let ACCOUNT: string;
 
 export type CategoryInfo = { catName: string; catId: string };
 export const CATEGORIES: CategoryInfo[] = [];
@@ -13,7 +13,7 @@ export async function loadEnvVariables() {
   NOTION_TOKEN = assertDefined(process.env.NOTION_TOKEN, "NOTION_TOKEN");
   EXPENSE_DB = assertDefined(process.env.EXPENSE_DB, "EXPENSE_DB");
   INCOME_DB = assertDefined(process.env.INCOME_DB, "INCOME_DB");
-  REVOLUT_ACC = assertDefined(process.env.REVOLUT_ACC, "REVOLUT_ACC");
+  ACCOUNT = assertDefined(process.env.ACCOUNT, "ACCOUNT");
 
   const CATEGORIES_DB = assertDefined(
     process.env.CATEGORIES_DB,

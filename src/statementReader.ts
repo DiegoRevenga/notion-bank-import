@@ -1,7 +1,7 @@
 import fs from "node:fs";
 const readline = require("readline");
 import { parse } from "csv-parse/sync";
-import { CATEGORIES, REVOLUT_ACC } from "./notion/notionKeys";
+import { CATEGORIES, ACCOUNT } from "./notion/notionKeys";
 import { Expense, Income, ParsedTransactions } from "./types";
 import categoriesMenu from "./util/categoriesMenu";
 
@@ -45,7 +45,7 @@ function parseTransactions(transactions: CSVTransaction[]): ParsedTransactions {
         Title: tx.Description,
         Amount: -Number.parseInt(tx.Amount),
         CategoryId: "",
-        AccountId: REVOLUT_ACC,
+        AccountId: ACCOUNT,
       });
     }
     // Income
@@ -54,7 +54,7 @@ function parseTransactions(transactions: CSVTransaction[]): ParsedTransactions {
         Date: tx["Started Date"],
         Title: tx.Description,
         Amount: Number.parseInt(tx.Amount),
-        AccountId: REVOLUT_ACC,
+        AccountId: ACCOUNT,
       });
     }
   }
