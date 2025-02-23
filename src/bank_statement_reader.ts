@@ -7,6 +7,7 @@ interface CSVTransaction {
   Description: string;
   Amount: string;
   "Started Date": string;
+  State: string;
 }
 
 export function getTranstactions() {
@@ -35,6 +36,8 @@ function parseTransactions(transactions: CSVTransaction[]): ParsedTransactions {
   const incomes: Income[] = [];
 
   for (const tx of transactions) {
+    if (tx.State === "REVERTED") continue;
+
     // Expense
     if (Number.parseInt(tx.Amount) <= 0) {
       expenses.push({
