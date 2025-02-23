@@ -1,5 +1,5 @@
-import { CATEGORIES, loadEnvVariables } from "./notion/notionKeys";
-import { getTranstactions } from "./bank_statement_reader";
+import { loadEnvVariables } from "./notion/notionKeys";
+import { getTranstactions } from "./statementReader";
 import sendTransactions from "./notion/sendTransactions";
 import dotenv from "dotenv";
 
@@ -8,7 +8,7 @@ dotenv.config();
 async function main() {
   await loadEnvVariables();
 
-  const transactions = getTranstactions();
+  const transactions = await getTranstactions();
   await sendTransactions(transactions);
 }
 

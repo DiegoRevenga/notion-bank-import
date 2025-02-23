@@ -1,7 +1,9 @@
 import fs from "node:fs";
+const readline = require("readline");
 import { parse } from "csv-parse/sync";
 import { CATEGORIES, REVOLUT_ACC } from "./notion/notionKeys";
 import { Expense, Income, ParsedTransactions } from "./types";
+import categoriesMenu from "./util/categoriesMenu";
 
 interface CSVTransaction {
   Description: string;
@@ -10,9 +12,10 @@ interface CSVTransaction {
   State: string;
 }
 
-export function getTranstactions() {
+export async function getTranstactions() {
   const csvTxs = readBankStatement();
   const txs = parseTransactions(csvTxs);
+  await setCategories(txs.expenses);
 
   return txs;
 }
@@ -44,7 +47,7 @@ function parseTransactions(transactions: CSVTransaction[]): ParsedTransactions {
         Date: tx["Started Date"],
         Title: tx.Description,
         Amount: -Number.parseInt(tx.Amount),
-        CategoryId: CATEGORIES.Investments, // TODO Set category
+        CategoryId: "",
         AccountId: REVOLUT_ACC,
       });
     }
@@ -63,4 +66,39 @@ function parseTransactions(transactions: CSVTransaction[]): ParsedTransactions {
     expenses: expenses,
     incomes: incomes,
   };
+}
+
+async function setCategories(expenses: Expense[]) {
+  console.clear();
+
+  // TODO Print all categories
+  const { stringMenu, menuMap } = categoriesMenu(CATEGORIES);
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  for (const ex of expenses) {
+    // Print menu
+    console.log(stringMenu, "\n");
+    console.log(`${ex.Title} - ${ex.Amount}€ - ${ex.Date}`);
+
+    // Wait for user input
+    const key: string = await new Promise((resolve) => {
+      rl.question("\n>>> ", (key: string) => {
+        resolve(key);
+      });
+    });
+
+    // Assign category
+    const catId = menuMap.get(key.toLowerCase());
+    if (catId) {
+      ex.CategoryId = catId;
+    }
+
+    console.clear();
+  }
+
+  rl.close();
 }

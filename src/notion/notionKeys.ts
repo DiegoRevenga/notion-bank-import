@@ -5,16 +5,9 @@ export let NOTION_TOKEN: string;
 export let EXPENSE_DB: string;
 export let INCOME_DB: string;
 export let REVOLUT_ACC: string;
-export const CATEGORIES = {
-  Food: "",
-  Shopping: "",
-  Transport: "",
-  Entertainment: "",
-  Investments: "",
-  "Health & Fitness": "",
-  Groceries: "",
-  "Party & Bars": "",
-};
+
+export type CategoryInfo = { catName: string; catId: string };
+export const CATEGORIES: CategoryInfo[] = [];
 
 export async function loadEnvVariables() {
   NOTION_TOKEN = assertDefined(process.env.NOTION_TOKEN, "NOTION_TOKEN");
@@ -41,6 +34,6 @@ async function loadCategories(catDB: string) {
   for (const cat of categories.results) {
     const catName = (cat as any).properties.Name.title[0].plain_text;
 
-    CATEGORIES[catName as keyof typeof CATEGORIES] = cat.id;
+    CATEGORIES.push({ catName: catName, catId: cat.id });
   }
 }
